@@ -1,0 +1,66 @@
+{
+  "especialidades": [
+    "Mastologia",
+    "Cirurgia Geral",
+    "Ortopedia/Traumatologia",
+    "Psiquiatria",
+    "Endocrinologia Pediátrica",
+    "Neuropediatria",
+    "Cardiologia",
+    "Hematologia/Hemoterapia",
+    "Oftalmologia",
+    "Urologia",
+    "Neurologia",
+    "Dermatologia",
+    "Ginecologia",
+    "Cirurgia Vascular",
+    "Pediatria"
+  ],
+  "exames": {
+    "imagem": {
+      "mamografia": [
+        "Mamografia bilateral",
+        "Aguardando carreta mamografia"
+      ],
+      "ultrassonografia": [
+        "USG Abdômen Total",
+        "USG Transvaginal",
+        "USG Obstétrica",
+        "USG Próstata (via abdominal)",
+        "USG Mama Bilateral"
+      ],
+      "tomografia": [
+        "TC Crânio",
+        "TC Coluna Cervical",
+        "TC Coluna Lombar",
+        "TC Coluna Lombossacra",
+        "TC Tórax",
+        "TC Abdômen",
+        "TC Face"
+      ],
+      "ressonancia": [
+        "RM Articulação Temporomandibular"
+      ],
+      "radiografia": [
+        "Raio-X Tórax (PA + Perfil)",
+        "Raio-X Crânio (PA + Lateral)",
+        "Raio-X Ossos da Face"
+      ]
+    },
+    "laboratoriais": [
+      "Hemograma",
+      "BHCG",
+      "Exames de rotina"
+    ],
+    "procedimentos": [
+      "Mapeamento de Retina"
+    ]
+  },
+  "status": [
+    "Aguardando agendamento",
+    "Falta de vagas (monitorar)",
+    "Falta vir buscar",
+    "Desistente",
+    "Carimbado/Liberado"
+  ]
+}

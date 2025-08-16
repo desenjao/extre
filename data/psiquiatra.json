@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ort001",
+    "nome_paciente": "Carlos Silva",
+    "data_nascimento": "10/05/1985",
+    "telefone": "(21) 98765-4321",
+    "especialidade": "ortopedista",
+    "tipo_exame": "Raio-X Joelho",
+    "sub_tipo_exame": "AP/Lateral",
+    "data_agendamento": "15/03/2024",
+    "hora_agendamento": "14:30",
+    "status": "Agendado",
+    "data_criacao": "01/03/2024",
+    "ultima_atualizacao": "01/03/2024",
+    "observacoes": "Paciente com histórico de lesão no ligamento"
+  },
+  {
+    "id": "ort002",
+    "nome_paciente": "Ana Oliveira",
+    "data_nascimento": "22/08/1972",
+    "telefone": "(21) 99876-5432",
+    "especialidade": "ortopedista",
+    "tipo_exame": "Ressonância Magnética",
+    "sub_tipo_exame": "Coluna Lombar",
+    "data_agendamento": "18/03/2024",
+    "hora_agendamento": "10:15",
+    "status": "Confirmado",
+    "data_criacao": "28/02/2024",
+    "ultima_atualizacao": "05/03/2024",
+    "observacoes": "Trazer exames anteriores"
+  }
+]

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmação de Consultas - <%= especialidade.replace('_', ' ').toUpperCase() %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: <% if (especialidade === 'ORTOPEDISTA') { %>#3498db<% } else if (especialidade === 'CASA_ROSA') { %>#ff69b4<% } else if (especialidade === 'PSIQUIATRIA') { %>#9b59b6<% } else { %>#2ecc71<% } %>;
+      --primary-dark: <% if (especialidade === 'ORTOPEDISTA') { %>#2980b9<% } else if (especialidade === 'CASA_ROSA') { %>#e84393<% } else if (especialidade === 'PSIQUIATRIA') { %>#8e44ad<% } else { %>#27ae60<% } %>;
+      --danger: #e74c3c;
+      --danger-dark: #c0392b;
+      --light-gray: #f8f9fa;
+      --medium-gray: #ecf0f1;
+      --dark-gray: #7f8c8d;
+      --text: #2c3e50;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 25%;
+      width: 50%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      border-radius: 2px;
+    }
+
+    h1 {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--dark-gray);
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .info-banner {
+      background: var(--medium-gray);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin: 0 1rem;
+    }
+
+    .info-icon {
+      margin-right: 0.5rem;
+      color: var(--primary);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    thead {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 500;
+    }
+
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--medium-gray);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background-color: rgba(0,0,0,0.02);
+    }
+
+    .btn {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-confirm {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-confirm:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .btn-cancel {
+      background-color: var(--danger);
+      color: white;
+      margin-left: 0.5rem;
+    }
+
+    .btn-cancel:hover {
+      background-color: var(--danger-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: modalFadeIn 0.3s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--dark-gray);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid var(--medium-gray);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+        margin: 1rem;
+      }
+
+      th, td {
+        padding: 0.8rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .btn-cancel {
+        margin-left: 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .info-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      table {
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* ... (mantenha o resto do CSS igual) ... */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Confirmação de Consultas</h1>
+      <p class="subtitle"><%= especialidade.replace('_', ' ').toUpperCase() %></p>
+    </div>
+
+    <div class="info-banner">
+      <div class="info-item">
+        <span class="info-icon">📅</span>
+        <span>Data: <strong>28/08/2025</strong></span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">📍</span>
+        <span>Local: <strong>Coronel</strong></span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">ℹ️</span>
+        <span>Segundo Distrito</span>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nome</th>
+          <th>Idade</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% pacientes.forEach((paciente, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= paciente.nome %></td>
+            <td><%= calcularIdade(paciente.datanasc) %> anos</td>
+            <td class="action-buttons">
+             
+              <button class="btn btn-cancel" onclick="openCancelModal('<%= paciente.nome %>')">Cancelar</button>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal de Confirmação -->
+  <div id="confirmModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Confirmar Presença</h3>
+        <button class="close-modal" onclick="closeModal('confirmModal')">&times;</button>
+      </div>
+      <p id="confirmMessage"></p>
+      <div class="form-group">
+        <label for="confirmCpf">CPF (somente números)</label>
+        <input type="text" id="confirmCpf" placeholder="000.000.000-00" maxlength="11" pattern="\d{11}" required>
+      </div>
+      <div class="form-group">
+        <label for="confirmBirthdate">Data de Nascimento</label>
+        <input type="date" id="confirmBirthdate" required>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-cancel" onclick="closeModal('confirmModal')">Fechar</button>
+        <button class="btn btn-confirm" onclick="submitConfirmation()">Enviar Confirmação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Cancelamento -->
+  <div id="cancelModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Cancelar Consulta</h3>
+        <button class="close-modal" onclick="closeModal('cancelModal')">&times;</button>
+      </div>
+      <p id="cancelMessage"></p>
+      <div class="form-group">
+        <label for="cancelCpf">CPF (somente números)</label>
+        <input type="text" id="cancelCpf" placeholder="000.000.000-00" maxlength="11" pattern="\d{11}" required>
+      </div>
+      <div class="form-group">
+        <label for="cancelBirthdate">Data de Nascimento</label>
+        <input type="date" id="cancelBirthdate" required>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-cancel" onclick="closeModal('cancelModal')">Fechar</button>
+        <button class="btn btn-confirm" onclick="submitCancellation()">Enviar Cancelamento</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPatientName = '';
+    const examDate = '28/08/2025';
+
+    function openConfirmModal(name) {
+      currentPatientName = name;
+      document.getElementById('confirmMessage').textContent = 
+        `Aqui é ${name} e confirmo minha presença no dia ${examDate} em Coronel.`;
+      document.getElementById('confirmModal').style.display = 'flex';
+    }
+
+    function openCancelModal(name) {
+      currentPatientName = name;
+      document.getElementById('cancelMessage').textContent = 
+        `Eu ${name} não conseguirei comparecer no dia da consulta.`;
+      document.getElementById('cancelModal').style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function submitConfirmation() {
+      const cpf = document.getElementById('confirmCpf').value;
+      const birthdate = document.getElementById('confirmBirthdate').value;
+      
+      if (!validateCPF(cpf)) {
+        alert('Por favor, insira um CPF válido com 11 dígitos.');
+        return;
+      }
+      
+      if (!birthdate) {
+        alert('Por favor, insira sua data de nascimento.');
+        return;
+      }
+      
+      // Aqui você implementaria o envio real dos dados
+      const message = `Confirmação enviada:\n\n` +
+                     `Nome: ${currentPatientName}\n` +
+                     `CPF: ${formatCPF(cpf)}\n` +
+                     `Data de Nascimento: ${birthdate}\n` +
+                     `Mensagem: Aqui é ${currentPatientName} e confirmo minha presença no ${examDate} em Coronel.`;
+      
+      alert(message);
+      closeModal('confirmModal');
+      // Aqui você pode adicionar AJAX para enviar para o servidor
+    }
+
+    function submitCancellation() {
+      const cpf = document.getElementById('cancelCpf').value;
+      const birthdate = document.getElementById('cancelBirthdate').value;
+      
+      if (!validateCPF(cpf)) {
+        alert('Por favor, insira um CPF válido com 11 dígitos.');
+        return;
+      }
+      
+      if (!birthdate) {
+        alert('Por favor, insira sua data de nascimento.');
+        return;
+      }
+      
+      // Aqui você implementaria o envio real dos dados
+      const message = `Cancelamento enviado:\n\n` +
+                     `Nome: ${currentPatientName}\n` +
+                     `CPF: ${formatCPF(cpf)}\n` +
+                     `Data de Nascimento: ${birthdate}\n` +
+                     `Mensagem: Eu ${currentPatientName}, portador do CPF: ${formatCPF(cpf)} não conseguirei comparecer no dia da consulta.`;
+      
+      alert(message);
+      closeModal('cancelModal');
+      // Aqui você pode adicionar AJAX para enviar para o servidor
+    }
+
+    function validateCPF(cpf) {
+      return /^\d{11}$/.test(cpf);
+    }
+
+    function formatCPF(cpf) {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
+    // Fechar modal ao clicar fora
+    window.onclick = function(event) {
+      if (event.target.className === 'modal') {
+        document.querySelectorAll('.modal').forEach(modal => {
+          modal.style.display = 'none';
+        });
+      }
+    }
+  </script>
+</body>
+</html>
