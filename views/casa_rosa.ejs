@@ -1,1 +1,385 @@
-casa CASA_ROSA
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmação de Consultas - <%= especialidade.replace('_', ' ').toUpperCase() %></title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e83f8e;
+      --primary-dark: #c72d7a;
+      --danger: #e74c3c;
+      --danger-dark: #c0392b;
+      --light-gray: #fff5f9;
+      --medium-gray: #fce4ec;
+      --dark-gray: #7f8c8d;
+      --text: #2c3e50;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 25%;
+      width: 50%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      border-radius: 2px;
+    }
+
+    h1 {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--dark-gray);
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .info-banner {
+      background: var(--medium-gray);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      margin: 0 1rem;
+    }
+
+    .info-icon {
+      margin-right: 0.5rem;
+      color: var(--primary);
+    }
+
+    /* ESTILO ATUALIZADO PARA PACIENTES */
+    .patient-list {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .patient-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-left: 4px solid var(--primary);
+      transition: transform 0.3s ease;
+    }
+
+    .patient-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    .patient-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .patient-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .patient-exam {
+      font-size: 0.9rem;
+      color: var(--primary);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .patient-age {
+      color: var(--dark-gray);
+      font-size: 0.95rem;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .btn-cancel {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-cancel:hover {
+      background-color: var(--danger-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: modalFadeIn 0.3s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--dark-gray);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid var(--medium-gray);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+        margin: 1rem;
+      }
+
+      .patient-card {
+        padding: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .info-banner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .patient-name {
+        font-size: 1.1rem;
+      }
+
+      .patient-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Confirmação de Consultas</h1>
+      <p class="subtitle"><%= especialidade.replace('_', ' ').toUpperCase() %></p>
+    </div>
+
+    <div class="info-banner">
+      <div class="info-item">
+        <span class="info-icon">📅</span>
+        <span>Data: <strong>22/08/2025</strong></span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">📍</span>
+        <span>Local: <strong>Casa Rosa</strong></span>
+      </div>
+      <div class="info-item">
+        <span class="info-icon">ℹ️</span>
+        <span>Atendimento Humanizado</span>
+      </div>
+    </div>
+
+    <!-- LISTAGEM DE PACIENTES ATUALIZADA -->
+    <div class="patient-list">
+      <% pacientes.forEach((paciente, index) => { %>
+        <div class="patient-card">
+          <div class="patient-name"><%= paciente.nome %></div>
+          <div class="patient-exam">Exame: <%= paciente.exame %></div>
+          <div class="patient-info-row">
+            <div class="patient-age"><%= calcularIdade(paciente.dataNasc) %> anos</div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+
+  <!-- Modal de Cancelamento -->
+  <div id="cancelModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Cancelar Consulta</h3>
+        <button class="close-modal" onclick="closeModal('cancelModal')">&times;</button>
+      </div>
+      <p id="cancelMessage"></p>
+      <div class="form-group">
+        <label for="cancelCpf">CPF (somente números)</label>
+        <input type="text" id="cancelCpf" placeholder="000.000.000-00" maxlength="11" pattern="\d{11}" required>
+      </div>
+      <div class="form-group">
+        <label for="cancelBirthdate">Data de Nascimento</label>
+        <input type="date" id="cancelBirthdate" required>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-cancel" onclick="closeModal('cancelModal')">Fechar</button>
+        <button class="btn btn-confirm" onclick="submitCancellation()">Enviar Cancelamento</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPatientName = '';
+    const examDate = '22/08/2025';
+
+    function openCancelModal(name) {
+      currentPatientName = name;
+      document.getElementById('cancelMessage').textContent = 
+        `Eu ${name} não conseguirei comparecer no dia da consulta.`;
+      document.getElementById('cancelModal').style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function submitCancellation() {
+      const cpf = document.getElementById('cancelCpf').value;
+      const birthdate = document.getElementById('cancelBirthdate').value;
+      
+      if (!validateCPF(cpf)) {
+        alert('Por favor, insira um CPF válido com 11 dígitos.');
+        return;
+      }
+      
+      if (!birthdate) {
+        alert('Por favor, insira sua data de nascimento.');
+        return;
+      }
+      
+      const message = `Cancelamento enviado:\n\n` +
+                     `Nome: ${currentPatientName}\n` +
+                     `CPF: ${formatCPF(cpf)}\n` +
+                     `Data de Nascimento: ${birthdate}\n` +
+                     `Mensagem: Eu ${currentPatientName}, portador do CPF: ${formatCPF(cpf)} não conseguirei comparecer no dia da consulta.`;
+      
+      alert(message);
+      closeModal('cancelModal');
+    }
+
+    function validateCPF(cpf) {
+      return /^\d{11}$/.test(cpf);
+    }
+
+    function formatCPF(cpf) {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
+    window.onclick = function(event) {
+      if (event.target.className === 'modal') {
+        document.querySelectorAll('.modal').forEach(modal => {
+          modal.style.display = 'none';
+        });
+      }
+    }
+  </script>
+</body>
+</html>

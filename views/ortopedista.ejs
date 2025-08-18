@@ -7,8 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: <% if (especialidade === 'ORTOPEDISTA') { %>#3498db<% } else if (especialidade === 'CASA_ROSA') { %>#ff69b4<% } else if (especialidade === 'PSIQUIATRIA') { %>#9b59b6<% } else { %>#2ecc71<% } %>;
-      --primary-dark: <% if (especialidade === 'ORTOPEDISTA') { %>#2980b9<% } else if (especialidade === 'CASA_ROSA') { %>#e84393<% } else if (especialidade === 'PSIQUIATRIA') { %>#8e44ad<% } else { %>#27ae60<% } %>;
+      --primary: #3498db;
+      --primary-dark: #2980b9;
       --danger: #e74c3c;
       --danger-dark: #c0392b;
       --light-gray: #f8f9fa;
@@ -91,73 +91,64 @@
       color: var(--primary);
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    /* ESTILO ATUALIZADO PARA PACIENTES */
+    .patient-list {
+      display: grid;
+      gap: 1.5rem;
     }
 
-    thead {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
+    .patient-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-left: 4px solid var(--primary);
+      transition: transform 0.3s ease;
     }
 
-    th {
-      padding: 1rem;
-      text-align: left;
-      font-weight: 500;
+    .patient-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     }
 
-    td {
-      padding: 1rem;
-      border-bottom: 1px solid var(--medium-gray);
+    .patient-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
     }
 
-    tr:last-child td {
-      border-bottom: none;
+    .patient-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    tr:hover {
-      background-color: rgba(0,0,0,0.02);
+    .patient-age {
+      color: var(--dark-gray);
+      font-size: 0.95rem;
     }
 
     .btn {
-      padding: 0.6rem 1.2rem;
+      padding: 0.5rem 1rem;
       border-radius: 8px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.3s ease;
       border: none;
       font-family: 'Poppins', sans-serif;
-    }
-
-    .btn-confirm {
-      background-color: var(--primary);
-      color: white;
-    }
-
-    .btn-confirm:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      font-size: 0.9rem;
     }
 
     .btn-cancel {
       background-color: var(--danger);
       color: white;
-      margin-left: 0.5rem;
     }
 
     .btn-cancel:hover {
       background-color: var(--danger-dark);
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    .action-buttons {
-      display: flex;
-      justify-content: flex-end;
     }
 
     /* Modal */
@@ -241,17 +232,8 @@
         margin: 1rem;
       }
 
-      th, td {
-        padding: 0.8rem;
-      }
-
-      .action-buttons {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      .btn-cancel {
-        margin-left: 0;
+      .patient-card {
+        padding: 1rem;
       }
     }
 
@@ -261,17 +243,20 @@
         align-items: flex-start;
       }
 
-      table {
-        font-size: 0.9rem;
+      .patient-name {
+        font-size: 1.1rem;
+      }
+
+      .patient-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
       }
 
       .btn {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.9rem;
+        width: 100%;
       }
     }
-
-    /* ... (mantenha o resto do CSS igual) ... */
   </style>
 </head>
 <body>
@@ -296,51 +281,17 @@
       </div>
     </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Nome</th>
-          <th>Idade</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% pacientes.forEach((paciente, index) => { %>
-          <tr>
-            <td><%= index + 1 %></td>
-            <td><%= paciente.nome %></td>
-            <td><%= calcularIdade(paciente.datanasc) %> anos</td>
-            <td class="action-buttons">
-             
-              <button class="btn btn-cancel" onclick="openCancelModal('<%= paciente.nome %>')">Cancelar</button>
-            </td>
-          </tr>
-        <% }); %>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Modal de Confirmação -->
-  <div id="confirmModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Confirmar Presença</h3>
-        <button class="close-modal" onclick="closeModal('confirmModal')">&times;</button>
-      </div>
-      <p id="confirmMessage"></p>
-      <div class="form-group">
-        <label for="confirmCpf">CPF (somente números)</label>
-        <input type="text" id="confirmCpf" placeholder="000.000.000-00" maxlength="11" pattern="\d{11}" required>
-      </div>
-      <div class="form-group">
-        <label for="confirmBirthdate">Data de Nascimento</label>
-        <input type="date" id="confirmBirthdate" required>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-cancel" onclick="closeModal('confirmModal')">Fechar</button>
-        <button class="btn btn-confirm" onclick="submitConfirmation()">Enviar Confirmação</button>
-      </div>
+    <!-- LISTAGEM DE PACIENTES ATUALIZADA -->
+    <div class="patient-list">
+      <% pacientes.forEach((paciente, index) => { %>
+        <div class="patient-card">
+          <div class="patient-name"><%= paciente.nome %></div>
+          <div class="patient-info-row">
+            <div class="patient-age"><%= calcularIdade(paciente.datanasc) %> anos</div>
+            <button class="btn btn-cancel" onclick="openCancelModal('<%= paciente.nome %>')">Cancelar</button>
+          </div>
+        </div>
+      <% }); %>
     </div>
   </div>
 
@@ -371,13 +322,6 @@
     let currentPatientName = '';
     const examDate = '28/08/2025';
 
-    function openConfirmModal(name) {
-      currentPatientName = name;
-      document.getElementById('confirmMessage').textContent = 
-        `Aqui é ${name} e confirmo minha presença no dia ${examDate} em Coronel.`;
-      document.getElementById('confirmModal').style.display = 'flex';
-    }
-
     function openCancelModal(name) {
       currentPatientName = name;
       document.getElementById('cancelMessage').textContent = 
@@ -387,32 +331,6 @@
 
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = 'none';
-    }
-
-    function submitConfirmation() {
-      const cpf = document.getElementById('confirmCpf').value;
-      const birthdate = document.getElementById('confirmBirthdate').value;
-      
-      if (!validateCPF(cpf)) {
-        alert('Por favor, insira um CPF válido com 11 dígitos.');
-        return;
-      }
-      
-      if (!birthdate) {
-        alert('Por favor, insira sua data de nascimento.');
-        return;
-      }
-      
-      // Aqui você implementaria o envio real dos dados
-      const message = `Confirmação enviada:\n\n` +
-                     `Nome: ${currentPatientName}\n` +
-                     `CPF: ${formatCPF(cpf)}\n` +
-                     `Data de Nascimento: ${birthdate}\n` +
-                     `Mensagem: Aqui é ${currentPatientName} e confirmo minha presença no ${examDate} em Coronel.`;
-      
-      alert(message);
-      closeModal('confirmModal');
-      // Aqui você pode adicionar AJAX para enviar para o servidor
     }
 
     function submitCancellation() {
@@ -429,7 +347,6 @@
         return;
       }
       
-      // Aqui você implementaria o envio real dos dados
       const message = `Cancelamento enviado:\n\n` +
                      `Nome: ${currentPatientName}\n` +
                      `CPF: ${formatCPF(cpf)}\n` +
@@ -438,7 +355,6 @@
       
       alert(message);
       closeModal('cancelModal');
-      // Aqui você pode adicionar AJAX para enviar para o servidor
     }
 
     function validateCPF(cpf) {
@@ -449,7 +365,6 @@
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     }
 
-    // Fechar modal ao clicar fora
     window.onclick = function(event) {
       if (event.target.className === 'modal') {
         document.querySelectorAll('.modal').forEach(modal => {
